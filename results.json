@@ -1,0 +1,33 @@
+{
+  "question": "Can a small gradient-boosted ranker on rule-consistency features beat a standard MLP candidate scorer (stand-in for CPCNet) at picking the answer panel in simulated Raven-style matrices, at lower training cost?",
+  "method": "Seeded simulation of RAVEN-style 3x3 puzzles (3 attributes, 4 row rules, I-RAVEN-style balanced-tree candidates). Both models train on 4000 puzzles and are tested once on 2000 held-out puzzles; the answer is the top-scoring of 8 candidates. Hyper-parameters chosen by 3-fold CV on the training set; 3 seeds each.",
+  "dataset": {
+    "name": "Simulated RAVEN-style puzzles",
+    "source_url": "generated in analysis.py (numpy, seed 42); no download",
+    "n_rows": 6000,
+    "n_train": 4000,
+    "n_test": 2000,
+    "same_as_paper": false,
+    "baseline_is_papers_method": false
+  },
+  "metric_name": "answer accuracy (8-way, test set)",
+  "higher_is_better": true,
+  "baseline": "sklearn MLPClassifier scoring one-hot (8 context panels + candidate); hidden layers (256, 128) chosen by CV. Not CPCNet.",
+  "improved": "LightGBM binary scorer on per-attribute rule-consistency features (constant/progression/add/sub/distribute-three) from rows 1-2 and the candidate-completed row 3; num_leaves=7 chosen by CV.",
+  "metrics": {
+    "baseline_score": 0.15033333333333332,
+    "improved_score": 1.0,
+    "baseline_score_std": 0.0037932688922470174,
+    "improved_score_std": 0.0,
+    "improvement": 0.8496666666666667,
+    "chance_accuracy": 0.125,
+    "baseline_cv_accuracy": 0.14699626930720686,
+    "improved_cv_accuracy": 0.9977498122656602,
+    "baseline_train_time_s": 4.860703786214192,
+    "improved_train_time_s": 0.3824443817138672,
+    "baseline_model_bytes": 1236615.0,
+    "improved_model_bytes": 189069.0,
+    "train_speedup_x": 12.709570381009852
+  },
+  "notes": "Simulation only: results do not transfer to real RAVEN/I-RAVEN/PGM or to CPCNet. The improved model uses hand-coded knowledge of the rule families (strong inductive bias), whereas the MLP must learn them from raw one-hot input. Rule-family overlap in random rows can make a few puzzles ambiguous. Test split is 33% (4000/2000 as specified, above the usual 20-30%). Train time of the improved model includes feature extraction; model size is the pickled size in bytes. Single process, small CPU budget for both."
+}
