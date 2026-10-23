@@ -24,6 +24,30 @@ python analysis.py
 ## Results
 Results are written to `results.json` (and a chart to `figures/`).
 
+## Results (latest run)
+
+On simulated RAVEN-style puzzles (simulation only; 2,000 held-out test puzzles, 8-way answer accuracy), a standard MLP candidate scorer standing in for your CPCNet reached 15%, while a LightGBM ranker on rule-consistency features reached 100%, training about 13x faster.
+
+| Metric | Value |
+|---|---|
+| baseline_score | 0.1503 |
+| improved_score | 1 |
+| baseline_score_std | 0.003793 |
+| improved_score_std | 0 |
+| improvement | 0.8497 |
+| chance_accuracy | 0.125 |
+| baseline_cv_accuracy | 0.147 |
+| improved_cv_accuracy | 0.9977 |
+| baseline_train_time_s | 4.861 |
+| improved_train_time_s | 0.3824 |
+| baseline_model_bytes | 1236615 |
+| improved_model_bytes | 189069 |
+| train_speedup_x | 12.71 |
+
+Run on 2026-10-23. Full output: [results.json](results.json) · [run.log](run.log)
+
+Notes: Simulation only: results do not transfer to real RAVEN/I-RAVEN/PGM or to CPCNet. The improved model uses hand-coded knowledge of the rule families (strong inductive bias), whereas the MLP must learn them from raw one-hot input. Rule-family overlap in random rows can make a few puzzles ambiguous. Test split is 33% (4000/2000 as specified, above the usual 20-30%). Train time of the improved model includes feature extraction; model size is the pickled size in bytes. Single process, small CPU budget for both.
+
 ## Reference
 
 This project is motivated by the following paper:
